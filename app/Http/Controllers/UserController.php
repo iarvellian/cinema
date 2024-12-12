@@ -38,7 +38,7 @@ class UserController extends Controller
         $userTransaksiFilms = $user->transaksiFilms()->with('detailTransaksiFilms')->get();
         $detailTransaksiFilms = $userTransaksiFilms->flatMap->detailTransaksiFilms;
 
-        $userTransaksiMakanans = $user->transaksiFilms()->with('detailTransaksiFilms')->get();
+        $userTransaksiMakanans = $user->transaksiMakanans()->with('detailTransaksiMakanans')->get();
         $detailTransaksiMakanans = $userTransaksiMakanans->flatMap->detailTransaksiMakanans;
         
         return view('v2.user.histori', compact('detailTransaksiFilms', 'detailTransaksiMakanans'));

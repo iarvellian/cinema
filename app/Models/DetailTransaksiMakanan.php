@@ -9,7 +9,7 @@ class DetailTransaksiMakanan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['transaksi_makanan_id', 'makanan_id'];
+    protected $fillable = ['transaksi_makanan_id', 'makanan_id', 'jumlah_makanan'];
 
     public function transaksiMakanan()
     {

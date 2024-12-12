@@ -14,5 +14,8 @@
     <label>Jam Tayang</label>
     <input type="time" name="jam_tayang" required>
     <br>
+    <label>Harga</label>
+    <input type="number" name="harga" required>
+    <br>
     <button type="submit">Simpan</button>
 </form>

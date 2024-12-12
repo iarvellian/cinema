@@ -98,7 +98,7 @@ class AuthController extends Controller
 
         // Redirect berdasarkan role
         if ($user->role_id == 1) {
-            return redirect()->route('v2.admin.home-admin')->with('success', 'Profil berhasil diperbarui.');
+            return redirect()->route('admin.home-admin')->with('success', 'Profil berhasil diperbarui.');
         } else if ($user->role_id == 2) {
             return redirect()->route('user.home-user')->with('success', 'Profil berhasil diperbarui.');
         }

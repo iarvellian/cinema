@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetailTransaksiMakanan;
+use App\Models\Jadwal;
 use App\Models\Makanan;
 use App\Models\TransaksiFilm;
 use App\Models\TransaksiMakanan;
@@ -35,7 +36,7 @@ class TransaksiMakananController extends Controller
         return view('v2.user.makanan.daftar-makanan', compact('makanans'));
     }
 
-    // Function pilih film
+    // Function pilih makanan
     public function pilihMakanan(Request $request)
     {
         Log::info('Method called:', ['method' => $request->method(), 'url' => $request->fullUrl()]);
@@ -53,24 +54,25 @@ class TransaksiMakananController extends Controller
     // Function pesan makan
     public function pesanMakanan(Request $request)
     {
+        Log::info('Masuk pesanMakanan', ['data' => $request->all()]);
+
         $request->validate([
-            'jadwal_id' => 'required|exists:jadwals,id',
-            'makanan_ids' => 'required|array',
             'jumlah' => 'required|array',
             'jumlah.*' => 'required|integer|min:1',
         ]);
 
-        $jadwalId = $request->jadwal_id;
         $userId = auth()->id();
-        $makananIds = $request->makanan_ids;
-        $jumlah = $request->jumlah;
+
+        // Ekstrak makanan_ids dan jumlah dari request
+        $makananIds = array_keys($request->jumlah);
+        $jumlah = array_values($request->jumlah);
 
         DB::beginTransaction();
         try {
-            // Hitung total harga berdasarkan jumlah makanan
-            $totalHarga = collect($makananIds)->sum(function ($id, $index) use ($jumlah) {
-                $makanan = Makanan::find($id);
-                return $makanan->harga * $jumlah[$index];
+            // Hitung total harga
+            $totalHarga = collect($makananIds)->zip($jumlah)->sum(function ($pair) {
+                $makanan = Makanan::find($pair[0]);
+                return $makanan ? $makanan->harga * $pair[1] : 0;
             });
 
             // Buat transaksi makanan
@@ -86,14 +88,18 @@ class TransaksiMakananController extends Controller
                 DetailTransaksiMakanan::create([
                     'transaksi_makanan_id' => $transaksiMakanan->id,
                     'makanan_id' => $id,
-                    'jumlah' => $jumlah[$index],
+                    'jumlah_makanan' => $jumlah[$index],
                 ]);
             }
 
+            Log::info('Pesanan Berhasil Dibuat');
+
             DB::commit();
-            return redirect()->route('user.makanan.pembayaran', $transaksiMakanan->id)->with('success', 'Pesanan berhasil dibuat!');
+            return redirect()->route('user.makanan.detail-transaksi', $transaksiMakanan->id)
+                ->with('success', 'Pesanan berhasil dibuat!');
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Pesan makanan gagal', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses pesanan.');
         }
     }

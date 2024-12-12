@@ -46,7 +46,7 @@
                                 <td>{{ $detail->tiket->jadwal->film->judul }}</td>
                                 <td>
                                     {{ $detail->tiket->jadwal->tgl_tayang }} 
-                                    ({{ $detail->tiket->jadwal->jam_mulai }} - {{ $detail->tiket->jadwal->jam_selesai }})
+                                    ({{ $detail->tiket->jadwal->jam_tayang }})
                                 </td>
                                 <td>{{ $detail->tiket->kursi->baris }}{{ $detail->tiket->kursi->no_kursi }}</td>
                             </tr>

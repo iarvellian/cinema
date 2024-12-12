@@ -26,9 +26,9 @@
             @foreach($transaksi->detailTransaksiMakanans as $detail)
             <tr>
                 <td>{{ $detail->makanan->nama_makanan }}</td>
-                <td>{{ $detail->jumlah }}</td>
+                <td>{{ $detail->jumlah_makanan }}</td>
                 <td>Rp {{ number_format($detail->makanan->harga, 0, ',', '.') }}</td>
-                <td>Rp {{ number_format($detail->jumlah * $detail->makanan->harga, 0, ',', '.') }}</td>
+                <td>Rp {{ number_format($detail->jumlah_makanan * $detail->makanan->harga, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
